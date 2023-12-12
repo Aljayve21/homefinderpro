@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="homefinderpro.SignupPage"
+             xmlns:local="clr-namespace:homefinderpro.AdminViewModels"
+             Title="SignupPage">
+
+    <ContentPage.BindingContext>
+        <local:SignupViewModel />
+    </ContentPage.BindingContext>
+
+
+    <StackLayout Background="#4F59DE" Padding="30">
+        <Label Text="SIGN UP" 
+           TextColor="White" FontFamily="Poppins-Bold" FontSize="30"
+           HorizontalOptions="Center" />
+
+        <Frame BackgroundColor="White" Padding="20" CornerRadius="10">
+            <StackLayout>
+                <Entry x:Name="FullnameEntry" Placeholder="Full Name" TextColor="Black" Text="{Binding Fullname}" />
+                <Entry x:Name="UsernameEntry" Placeholder="Username" TextColor="Black" Text="{Binding Username}" />
+                <Entry x:Name="PasswordEntry" Placeholder="Password" TextColor="Black" IsPassword="True" Text="{Binding Password}"/>
+
+                <Picker x:Name="RolePicker" Title="Select Role" TextColor="Black" SelectedItem="{Binding SelectedRole}"/>
+
+                <Button Text="SIGN UP"
+                    x:Name="SignUpButton"
+                    Background="Orange" TextColor="White"
+                    Command="{Binding SignupCommand}"/>
+            </StackLayout>
+        </Frame>
+
+        <Button Text="Already have an account? Login"
+            BackgroundColor="Orange" TextColor="White"
+            Margin="0,20,0,0"/>
+    </StackLayout>
+</ContentPage>
