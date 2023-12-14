@@ -84,7 +84,7 @@ namespace homefinderpro.AdminViewModels
                 switch (_selectedRole.ToLowerInvariant())
                 {
                     case "landlord":
-                        var landlord = new Landlord(new DBConnection())
+                        var landlord = new Landlord
                         {
                             Fullname = Fullname,
                             Username = Username,

@@ -49,13 +49,34 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Remove="Resources\Fonts\Poppins-Black.ttf" />
+	  <None Remove="Resources\Fonts\Poppins-BlackItalic.ttf" />
+	  <None Remove="Resources\Fonts\Poppins-Bold.ttf" />
+	  <None Remove="Resources\Fonts\Poppins-BoldItalic.ttf" />
+	  <None Remove="Resources\Fonts\Poppins-ExtraBold.ttf" />
+	  <None Remove="Resources\Fonts\Poppins-ExtraBoldItalic.ttf" />
+	  <None Remove="Resources\Fonts\Poppins-ExtraLight.ttf" />
+	  <None Remove="Resources\Fonts\Poppins-ExtraLightItalic.ttf" />
+	  <None Remove="Resources\Fonts\Poppins-Italic.ttf" />
+	  <None Remove="Resources\Fonts\Poppins-Light.ttf" />
+	  <None Remove="Resources\Fonts\Poppins-LightItalic.ttf" />
+	  <None Remove="Resources\Fonts\Poppins-Medium.ttf" />
+	  <None Remove="Resources\Fonts\Poppins-MediumItalic.ttf" />
+	  <None Remove="Resources\Fonts\Poppins-Regular.ttf" />
+	  <None Remove="Resources\Fonts\Poppins-SemiBold.ttf" />
+	  <None Remove="Resources\Fonts\Poppins-SemiBoldItalic.ttf" />
+	  <None Remove="Resources\Fonts\Poppins-Thin.ttf" />
+	  <None Remove="Resources\Fonts\Poppins-ThinItalic.ttf" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="BCrypt.Net" Version="0.1.0" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="7.0.0" />
 		<PackageReference Include="Microsoft.Maui.Controls.Maps" Version="7.0.101" />
-		<PackageReference Include="MongoDB.Bson" Version="2.22.0" />
-		<PackageReference Include="MongoDB.Driver" Version="2.22.0" />
-		<PackageReference Include="MongoDB.Driver.Core" Version="2.22.0" />
-		<PackageReference Include="MongoDB.Driver.GridFS" Version="2.22.0" />
+		<PackageReference Include="MongoDB.Bson" Version="2.23.0" />
+		<PackageReference Include="MongoDB.Driver" Version="2.23.0" />
+		<PackageReference Include="MongoDB.Driver.Core" Version="2.23.0" />
+		<PackageReference Include="MongoDB.Driver.GridFS" Version="2.23.0" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -78,6 +99,9 @@
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="landlord\Home.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="landlord\LandlordMaps.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="landlord\PendinApprovalPage.xaml">
