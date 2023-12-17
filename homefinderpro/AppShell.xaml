@@ -32,12 +32,13 @@
         </ShellItem>
         <ShellItem Route="landlord">
             <ShellContent ContentTemplate="{DataTemplate local:landlord.CustomerService}" Title="Service" Route="CustomerService" />
-            
+
             <Tab Route="post" Title="Post">
                 <ShellContent ContentTemplate="{DataTemplate local:landlord.Post}" Route="post" Title="Post" />
-                    <ShellContent ContentTemplate="{DataTemplate local:landlord.LandlordMaps}" Route="landlordMaps" Title="Maps" />
-                </Tab>
-            
+                <ShellContent ContentTemplate="{DataTemplate local:landlord.LandlordMaps}" Route="landlordMaps" Title="Maps" />
+                <ShellContent ContentTemplate="{DataTemplate local:landlord.PendinApprovalPage}" Route="PendinApprovalPage" Title="Status" />
+            </Tab>
+
             <Tab Route="home" Title="Home">
                 <ShellContent ContentTemplate="{DataTemplate local:landlord.Home}" Route="home" />
             </Tab>

@@ -3,8 +3,33 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="homefinderpro.landlord.LandlordMaps"
              xmlns:maps="clr-namespace:Microsoft.Maui.Controls.Maps;assembly=Microsoft.Maui.Controls.Maps"
+             xmlns:sensors="clr-namespace:Microsoft.Maui.Devices.Sensors;assembly=Microsoft.Maui.Essentials"
              Title="LandlordMaps">
 
 
-    <maps:Map x:Name="map" />
+    <maps:Map IsTrafficEnabled="True">
+        <maps:Map.MapElements>
+            <maps:Circle StrokeColor="#88FF0000"
+                         StrokeWidth="8"
+                         FillColor="#88FFC0CB">
+                <maps:Circle.Center>
+                        <sensors:Location>
+                            <x:Arguments>
+                                <x:Double>14.832884932372899</x:Double>
+                                <x:Double>120.90279503010642</x:Double>
+                            </x:Arguments>
+                        </sensors:Location>
+                    </maps:Circle.Center>
+                    <maps:Circle.Radius>
+                    <Distance>
+                        <x:Arguments>
+                            <x:Double>250</x:Double>
+                        </x:Arguments>
+                    </Distance>
+                </maps:Circle.Radius>
+            </maps:Circle>
+        </maps:Map.MapElements>
+        
+    </maps:Map>
+
 </ContentPage>

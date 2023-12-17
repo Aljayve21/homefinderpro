@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using MongoDB.Driver;
 using homefinderpro.AdminModels;
 using MongoDB.Bson;
+using homefinderpro.LandlordModels;
 
 namespace homefinderpro.Models
 {

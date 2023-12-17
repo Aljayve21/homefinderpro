@@ -6,7 +6,6 @@ using System.Text;
 using System.Threading.Tasks;
 using homefinderpro.AdminModels;
 using homefinderpro.Models;
-using MongoDB.Driver;
 using homefinderpro.LandlordViewModels;
 using homefinderpro.CustomerModels;
 
@@ -145,12 +144,14 @@ namespace homefinderpro.AdminViewModels
         private async Task<bool> IsUsernameExistsAsync(IMongoDatabase database, string username)
         {
             var adminsCollection = database.GetCollection<users>("users");
-            var landlordsCollection = database.GetCollection<Landlord>("landlord");
+            var landlordsCollection = database.GetCollection<Landlord>("landlords");
+            var customersCollection = database.GetCollection<Customer>("customers");
 
+            var customerUsernameExists = await customersCollection.Find(a => a.Username == username).AnyAsync();
             var adminUsernameExists = await adminsCollection.Find(a => a.Username == username).AnyAsync();
             var landlordUsernameExists = await landlordsCollection.Find(l => l.Username == username).AnyAsync();
 
-            return adminUsernameExists || landlordUsernameExists;
+            return adminUsernameExists || landlordUsernameExists || customerUsernameExists;
         }
 
 

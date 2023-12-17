@@ -49,6 +49,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Remove="Platforms\Android\Resources\values\google_maps_api.xml" />
 	  <None Remove="Resources\Fonts\Poppins-Black.ttf" />
 	  <None Remove="Resources\Fonts\Poppins-BlackItalic.ttf" />
 	  <None Remove="Resources\Fonts\Poppins-Bold.ttf" />
@@ -70,13 +71,15 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="BCrypt.Net" Version="0.1.0" />
+    <PackageReference Include="BCrypt.Net" Version="0.1.0" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="7.0.0" />
 		<PackageReference Include="Microsoft.Maui.Controls.Maps" Version="7.0.101" />
 		<PackageReference Include="MongoDB.Bson" Version="2.23.0" />
 		<PackageReference Include="MongoDB.Driver" Version="2.23.0" />
 		<PackageReference Include="MongoDB.Driver.Core" Version="2.23.0" />
 		<PackageReference Include="MongoDB.Driver.GridFS" Version="2.23.0" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+		<PackageReference Include="Xamarin.Essentials" Version="1.8.0" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -123,6 +126,18 @@
 
 	<ItemGroup>
 	  <Folder Include="customer\" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net7.0-android'">
+	  <PackageReference Include="Onion.Maui.GoogleMaps">
+	    <Version>5.0.1</Version>
+	  </PackageReference>
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net7.0-ios'">
+	  <PackageReference Include="Onion.Maui.GoogleMaps">
+	    <Version>5.0.1</Version>
+	  </PackageReference>
 	</ItemGroup>
 
 </Project>

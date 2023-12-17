@@ -21,6 +21,6 @@ public static class MauiProgram
 		builder.Logging.AddDebug();
 #endif
 
-		return builder.Build();
+        return builder.Build();
 	}
 }
