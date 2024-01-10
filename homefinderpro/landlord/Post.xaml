@@ -6,11 +6,65 @@
              xmlns:local="clr-namespace:homefinderpro.LandlordViewModels"
              Title="Post">
 
-    <StackLayout>
-        <Entry Placeholder="Apartment Name" x:Name="ApartmentNameEntry" />
-        <Entry Placeholder="Price (PHP)" x:Name="PriceEntry" />
-        <Entry Placeholder="Descriptions" x:Name="DescriptionsEntry" />
-        <Entry Placeholder="Locations" x:Name="LocationEntry" />
+    <StackLayout Background="#4F59DE" Padding="30">
+
+        <Frame BackgroundColor="White" Padding="20" CornerRadius="10">
+            <StackLayout>
+
+                <Picker x:Name="CategoryPicker" TextColor="Black" SelectedItem="{Binding SelectedCategory, Mode=TwoWay}">
+                    <Picker.ItemsSource>
+                        <x:Array Type="{x:Type x:String}">
+                            <x:String>Studio Type</x:String>
+                            <x:String>Loft Type</x:String>
+                            <x:String>Flat-level Type</x:String>
+                            <!-- Add other categories as needed -->
+                        </x:Array>
+                    </Picker.ItemsSource>
+                </Picker>
+
+
+                <Entry Placeholder="Apartment Name" x:Name="ApartmentNameEntry" TextColor="Black" />
+                <Entry Placeholder="Price" x:Name="PriceEntry" TextColor="Black" />
+
+
+                <StackLayout>
+                    <Label Text="Photos" TextColor="Black" />
+                    <CollectionView ItemsSource="{Binding Photos}">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <Image Source="{Binding MainImage, Converter={StaticResource ByteArrayToImageSourceConverter}}" WidthRequest="50" HeightRequest="50" />
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                    <Button Text="Add Photo" Clicked="OnAddPhotoClicked" BackgroundColor="Orange" />
+                </StackLayout>
+
+                <StackLayout>
+                    <Label Text="Valid ID Picture" TextColor="Black" />
+                    <Image Source="{Binding ValidIdPicture}" WidthRequest="50" HeightRequest="50" />
+                    <Button Text="Upload Valid ID" Clicked="OnUploadValidIdClicked" BackgroundColor="Orange" />
+                </StackLayout>
+
+                <StackLayout>
+                    <Label Text="Government Document" TextColor="Black" />
+                    <Image Source="{Binding GovernmentDocument}" WidthRequest="50" HeightRequest="50" />
+                    <Button Text="Upload Government Document" BackgroundColor="Orange" Clicked="OnUploadGovernmentDocumentClicked" />
+                </StackLayout>
+
+
+
+                <Editor Placeholder="Description" x:Name="DescriptionEditor" TextColor="Black" />
+
+
+
+
+
+                <Button Text="Submit" Clicked="OnSubmitClicked" BackgroundColor="Orange"  />
+                <Label Text="{Binding Status}" />
+            </StackLayout>
+        </Frame>
+
+
     </StackLayout>
     
     

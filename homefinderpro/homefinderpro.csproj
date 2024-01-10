@@ -68,6 +68,10 @@
 	  <None Remove="Resources\Fonts\Poppins-SemiBoldItalic.ttf" />
 	  <None Remove="Resources\Fonts\Poppins-Thin.ttf" />
 	  <None Remove="Resources\Fonts\Poppins-ThinItalic.ttf" />
+	  <None Remove="Resources\Images\locationpin.png" />
+	  <None Remove="Resources\Images\profilepicture.png" />
+	  <None Remove="Resources\Images\search.png" />
+	  <None Remove="Resources\Images\upload.png" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -79,6 +83,8 @@
 		<PackageReference Include="MongoDB.Driver.Core" Version="2.23.0" />
 		<PackageReference Include="MongoDB.Driver.GridFS" Version="2.23.0" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+		<PackageReference Include="Syncfusion.Licensing" Version="23.2.7" />
+		<PackageReference Include="Syncfusion.Maui.Core" Version="23.2.7" />
 		<PackageReference Include="Xamarin.Essentials" Version="1.8.0" />
 	</ItemGroup>
 
@@ -87,6 +93,9 @@
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="admin\Home.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="admin\LandlordPostDetailView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="admin\MonitorPage.xaml">
@@ -126,6 +135,7 @@
 
 	<ItemGroup>
 	  <Folder Include="customer\" />
+	  <Folder Include="LandlordModels\" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net7.0-android'">

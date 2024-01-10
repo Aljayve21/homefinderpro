@@ -1,5 +1,6 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Driver;
+using Microsoft.Maui.Controls;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -8,48 +9,30 @@ using System.Text;
 using System.Threading.Tasks;
 using homefinderpro.AdminModels;
 using homefinderpro.Models;
+using System.Collections.ObjectModel;
+using System.Windows.Input;
+using Microsoft.Extensions.Logging;
 
 namespace homefinderpro.AdminViewModels
 {
+
+    public class UserDetailsModel
+    {
+        public string Username { get; set; }
+        public string Fullname { get; set; }
+        public string Role { get; set; }
+    }
+
     public class ProfilePictureViewModel : INotifyPropertyChanged
     {
-
-        private readonly IMongoDatabase _database;
-
-        private ImageSource profilePicture;
-        public Command UploadPictureCommand => new Command(async () => await ExecuteUploadPictureCommand());
-        private UserProfile _loggedInUser;
-        public UserProfile LoggedInUser
+        
+        private readonly IMongoCollection<users> _userCollection;
+        
+        public ProfilePictureViewModel()
         {
-            get => _loggedInUser;
-            set
-            {
-                _loggedInUser = value;
-                OnPropertyChanged(nameof(LoggedInUser));
-            }
+            _userCollection = DBConnection.Instance.GetDatabase().GetCollection<users>("users");
+            LoadUserProfiles();
         }
-        public ImageSource ProfilePicture
-        {
-            get => profilePicture;
-            set
-            {
-                profilePicture = value;
-                OnPropertyChanged(nameof(ProfilePicture));
-            }
-        }
-
-        private List<UserProfile> _userProfiles;
-
-        public List<UserProfile> UserProfiles
-        {
-            get => _userProfiles;
-            set
-            {
-                _userProfiles = value;
-                OnPropertyChanged(nameof(UserProfiles));
-            }
-        }
-
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -58,25 +41,172 @@ namespace homefinderpro.AdminViewModels
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        public ImageSource ByteArrayToImageSource(byte[] imageData)
+        private ObservableCollection<users> _userProfiles;
+        public ObservableCollection<users> UserProfiles
         {
-            return ImageSource.FromStream(() => new MemoryStream(imageData));
+            get { return _userProfiles; }
+            set { _userProfiles = value; }
+        }
+
+        private users _selectedUserProfile;
+        public users SelectedUserProfile
+        {
+            get { return _selectedUserProfile; }
+            set { _selectedUserProfile = value; }
+        }
+
+        public async Task GetUserDetails(string username)
+        {
+            try
+            {
+                var user = await _userCollection.Find(u => u.Username == username).FirstOrDefaultAsync();
+
+                if (user != null)
+                {
+                    string role = user.Role;
+                    string fullName = user.Fullname;
+                    string retrievedUsername = user.Username;
+
+                    Console.WriteLine($"Role: {role}, Username: {retrievedUsername}, Fullname: {fullName}");
+
+                    // Update UserDetailsCollection
+                    UserDetailsCollection = new ObservableCollection<UserDetailsModel>
+                {
+                    new UserDetailsModel { Username = retrievedUsername, Fullname = fullName, Role = role }
+                };
+
+                    
+                    UserSession.Instance.SetUser(retrievedUsername, fullName, role);
+                }
+                else
+                {
+                    Console.WriteLine($"No user found for username: {username}");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error retrieving user details: {ex.Message}");
+            }
         }
 
 
 
-
-        public ProfilePictureViewModel()
+        private async void LoadUserProfiles()
         {
+            try
+            {
+                var users = await _userCollection.Find(_ => true).ToListAsync();
+                UserProfiles = new ObservableCollection<users>(users);
 
-            var dbConnection = new DBConnection();
-            _database = dbConnection.GetDatabase();
+                if (UserProfiles.Count > 0)
+                {
+                    SelectedUserProfile = UserProfiles[0];
 
-            //Task.Run(async () => await LoadLoggedInUserProfile());
+                    if (SelectedUserProfile.ProfilePicture != null)
+                    {
+                        SelectedUserProfilePicture = ImageSource.FromStream(() => new MemoryStream(SelectedUserProfile.ProfilePicture));
+                    }
+                    else
+                    {
+                        SelectedUserProfilePicture = ImageSource.FromFile("profilepicture.png");
+                    }
 
+                    UserSession.Instance.SetUser(SelectedUserProfile.Username, SelectedUserProfile.Fullname, SelectedUserProfile.Role);
+                }
+                else
+                {
+                    SelectedUserProfilePicture = ImageSource.FromFile("profilepicture.png");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error loading user profiles: {ex.Message}");
+                SelectedUserProfilePicture = ImageSource.FromFile("profilepicture.png");
+            }
         }
 
-        //public ObservableCollection<UserProfile> UserProfiles { get; set; }
+
+        private ICommand _uploadProfilePictureCommand;
+        public ICommand UploadProfilePictureCommand
+        {
+            get
+            {
+                return _uploadProfilePictureCommand ?? (_uploadProfilePictureCommand = new Command(async () => await ExecuteUploadProfilePictureCommand()));
+            }
+        }
+
+        private ImageSource _profileImageSource;
+        public ImageSource ProfileImageSource
+        {
+            get { return _profileImageSource; }
+            set
+            {
+                _profileImageSource = value;
+                OnPropertyChanged(nameof(ProfileImageSource));
+            }
+        }
+
+        private ImageSource _selectedUserProfilePicture;
+
+        public ImageSource SelectedUserProfilePicture
+        {
+            get { return _selectedUserProfilePicture; }
+            set
+            {
+                if (_selectedUserProfilePicture != value)
+                {
+                    _selectedUserProfilePicture = value;
+                    OnPropertyChanged(nameof(SelectedUserProfilePicture));
+                }
+            }
+        }
+
+
+        public async Task ExecuteUploadProfilePictureCommand()
+        {
+            try
+            {
+                Console.WriteLine("Executing UploadProfilePictureCommand");
+                var pictureData = await GetPictureDataAsync();
+
+                if (pictureData != null)
+                {
+                    await UploadProfilePicture(pictureData);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error during profile picture upload: {ex.Message}");
+            }
+        }
+
+
+
+        public async Task<byte[]> GetPictureDataAsync()
+        {
+            try
+            {
+                Console.WriteLine("Attempting to pick a photo");
+                var photo = await MediaPicker.PickPhotoAsync();
+
+                if (photo != null)
+                {
+                    using (var stream = await photo.OpenReadAsync())
+                    using (var memoryStream = new MemoryStream())
+                    {
+                        await stream.CopyToAsync(memoryStream);
+                        Console.WriteLine("Successfully obtained picture data");
+                        return memoryStream.ToArray();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error getting picture data: {ex.Message}");
+            }
+
+            return null;
+        }
 
 
 
@@ -84,261 +214,126 @@ namespace homefinderpro.AdminViewModels
         {
             try
             {
+                Console.WriteLine($"Checking if admin username '{username}' exists in the users collection.");
 
-                string collectionName = "UserProfile";
+                // Check if the admin username exists in the users collection
+                var adminUsernameExists = await _userCollection.Find(u => u.Username == username).AnyAsync();
 
-
-                var userProfileCollection = _database.GetCollection<BsonDocument>(collectionName);
-
-                if (userProfileCollection != null)
+                if (adminUsernameExists)
                 {
-                    var filter = Builders<BsonDocument>.Filter.Eq("Username", username) & Builders<BsonDocument>.Filter.Eq("Role", role);
-                    var update = Builders<BsonDocument>.Update.Set("ProfilePicture", BsonBinaryData.Create(pictureData));
+                    Console.WriteLine($"Admin username '{username}' exists in the users collection.");
 
-                    var result = await userProfileCollection.UpdateOneAsync(filter, update);
+                    // Proceed with the regular user update logic
+                    Console.WriteLine($"Attempting to update profile picture for username: {username}, role: {role}");
+
+                    var filter = Builders<users>.Filter.Eq("Username", username) & Builders<users>.Filter.Eq("Role", role);
+                    var update = Builders<users>.Update.Set("ProfilePicture", BsonBinaryData.Create(pictureData));
+                    var result = await _userCollection.UpdateOneAsync(filter, update);
+                    Console.WriteLine($"Filter expression: {filter.ToString()}");
 
                     if (result.ModifiedCount == 0)
                     {
                         Console.WriteLine($"No matching document found for username: {username} and role: {role}");
-
                     }
-
-
-                    ProfilePicture = ByteArrayToImageSource(pictureData);
+                    else
+                    {
+                        Console.WriteLine($"Profile picture updated successfully for username: {username}, role: {role}");
+                    }
                 }
                 else
                 {
-                    Console.WriteLine($"UserProfile collection is null");
-
+                    Console.WriteLine($"Admin username '{username}' does not exist in the users collection.");
                 }
+
+                LoadUserProfiles();
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error while saving profile picture: {ex.Message}");
-
             }
         }
 
-        /*
-        public async Task LoadLoggedInUserProfile()
+        public async Task DeleteProfilePicture(string username, string role)
         {
             try
             {
-                var profiles = await GetLoggedInUserProfile();
-                UserProfiles = new ObservableCollection<UserProfile>(profiles);
-
-                OnPropertyChanged(nameof(UserProfiles));
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error while loading user profiles: {ex.Message}");
-            }
-        }
-        */
-
-        private async Task ExecuteUploadPictureCommand()
-        {
-            try
-            {
-                var stream = GetPictureStream();
-
-                if (stream != null)
+                var adminUsernameExists = await _userCollection.Find(u => u.Username == username).AnyAsync();
+                if (adminUsernameExists)
                 {
-                    var byteArray = ReadFully(stream);
+                    Console.WriteLine($"Admin username '{username}' exists in the users collection.");
 
-                    await SaveProfilePictureToDatabase(byteArray);
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error during upload: {ex.Message}");
-            }
-        }
-        /*
-        private async void UploadPicture()
-        {
-            var stream = GetPictureStream();
+                    Console.WriteLine($"Attempting to delete profile picture for username: {username}, role: {role}");
+                    string collectionName = role.ToLower();
+                    //var userProfileCollection = DBConnection.Instance.GetDatabase().GetCollection<users>(collectionName);
 
-            if (stream != null)
-            {
-                var byteArray = ReadFully(stream);
-                await SaveProfilePicture("username", "user_role", byteArray);
+                    var filter = Builders<users>.Filter.Eq("Username", username);
+                    var update = Builders<users>.Update.Unset("ProfilePicture");
 
-            }
-        }
-        */
+                    var result = await _userCollection.UpdateOneAsync(filter, update);
 
-        public Stream GetPictureStream()
-        {
-            try
-            {
-                var mediaFile = MediaPicker.PickVideoAsync().Result;
-
-                if (mediaFile != null)
-                {
-                    return mediaFile.OpenReadAsync().Result;
-                }
-                return null;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error picking a photo: {ex.Message}");
-                return null;
-            }
-        }
-
-
-
-        public byte[] ReadFully(Stream input)
-        {
-            using (MemoryStream ms = new MemoryStream())
-            {
-                input.CopyTo(ms);
-                return ms.ToArray();
-            }
-        }
-
-
-
-
-
-
-        public async Task<List<UserProfile>> GetLoggedInUserProfile()
-        {
-            try
-            {
-                if (!UserSession.Instance.IsUserLoggedIn())
-                {
-                    Console.WriteLine("User not logged in.");
-                    return new List<UserProfile>();
-                }
-
-                var username = UserSession.Instance.Username;
-                var role = UserSession.Instance.Role;
-
-                IMongoCollection<BsonDocument> userCollection;
-                switch (role.ToLowerInvariant())
-                {
-                    case "admin":
-                        userCollection = _database.GetCollection<BsonDocument>("users");
-                        break;
-                    case "customer":
-                        userCollection = _database.GetCollection<BsonDocument>("customers");
-                        break;
-                    case "landlord":
-                        userCollection = _database.GetCollection<BsonDocument>("landlords");
-                        break;
-                    default:
-                        Console.WriteLine($"Unsupported role: {role}");
-                        return new List<UserProfile>();
-                }
-
-                var filter = Builders<BsonDocument>.Filter.Eq("Username", username);
-                var projection = Builders<BsonDocument>.Projection.Include("Username")
-                                                            .Include("Fullname")
-                                                            .Include("ProfilePicture");
-
-                var result = await userCollection.Find(filter).Project(projection).ToListAsync();
-
-                var userProfileList = result.Select(doc =>
-                    new UserProfile
+                    if (result.ModifiedCount == 0)
                     {
-                        Username = doc.GetValue("Username").AsString ?? string.Empty,
-                        Fullname = doc.GetValue("Fullname").AsString ?? string.Empty,
-                        ProfilePicture = doc.GetValue("ProfilePicture").AsByteArray ?? Array.Empty<byte>()
+                        Console.WriteLine($"No matching document found for username: {username} and role: {role}");
                     }
-                ).ToList();
 
-                return userProfileList;
+                    LoadUserProfiles();
+                }
+                
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error while retrieving data: {ex.Message}");
-                throw;
+                Console.WriteLine($"Error while deleting profile picture: {ex.Message}");
             }
         }
 
-        public async Task SaveProfilePictureToDatabase(byte[] pictureData)
+        public async Task UploadProfilePicture(byte[] pictureData)
+        {
+            if (SelectedUserProfile != null)
+            {
+                await SaveProfilePicture(SelectedUserProfile.Username, SelectedUserProfile.Role, pictureData);
+            }
+            else
+            {
+                Console.WriteLine("No user profile selected for upload.");
+            }
+        }
+
+        
+
+        private ObservableCollection<UserDetailsModel> _userDetailsCollection;
+        public ObservableCollection<UserDetailsModel> UserDetailsCollection
+        {
+            get { return _userDetailsCollection; }
+            set
+            {
+                _userDetailsCollection = value;
+                OnPropertyChanged(nameof(UserDetailsCollection));
+            }
+        }
+
+        private async Task ExecuteGetUserDetailsCommand()
         {
             try
             {
-                if (LoggedInUser != null)
+                if (!string.IsNullOrEmpty(SelectedUserProfile?.Username))
                 {
-                    var userProfileCollection = _database.GetCollection<UserProfile>("UserProfile");
-
-                    var filter = Builders<UserProfile>.Filter.Eq("Id", LoggedInUser.Id);
-                    var update = Builders<UserProfile>.Update.Set("ProfilePicture", pictureData);
-
-                    await userProfileCollection.UpdateOneAsync(filter, update);
+                    
+                    await GetUserDetails(SelectedUserProfile.Username);
                 }
                 else
                 {
-                    Console.WriteLine("No logged-in user found.");
+                    Console.WriteLine("No user profile selected to retrieve details.");
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error while saving profile picture: {ex.Message}");
-
+                Console.WriteLine($"Error executing GetUserDetailsCommand: {ex.Message}");
             }
         }
 
+        
 
 
-        public async Task<byte[]> ImageSourceToByteArray(ImageSource imageSource)
-        {
-            try
-            {
-                var streamImageSource = (StreamImageSource)imageSource;
-                var stream = await streamImageSource.Stream(CancellationToken.None);
-                using (var memoryStream = new MemoryStream())
-                {
-                    stream.CopyTo(memoryStream);
-                    return memoryStream.ToArray();
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error while converting ImageSource to byte: {ex.Message}");
-                throw;
-            }
-        }
-
-        /*
-        public Command UploadPictureCommand
-        {
-            get
-            {
-                return new Command(async () =>
-                {
-                    var stream = GetPictureStream();
-                    if (stream != null)
-                    {
-                        var byteArray = ReadFully(stream);
-                        await SaveProfilePictureToDatabase("username", "user_role", ImageSource.FromStream(() => new MemoryStream(byteArray)));
-                    }
-                });
-            }
-        }
-        */
-
-        public void LoadUserProfile()
-        {
-            if (UserSession.Instance.IsUserLoggedIn())
-            {
-                var username = UserSession.Instance.Username;
-                var filter = Builders<users>.Filter.Eq("Username", username);
-                var projection = Builders<users>.Projection.Include(a => a.Username).Include(a => a.Fullname).Include(a => a.ProfilePicture);
-
-                var user = _database.GetCollection<users>("users").Find(filter).Project(projection).FirstOrDefault();
-
-                if (user != null)
-                {
-                    var profilePicture = user.GetValue("ProfilePicture").AsByteArray;
-                    ProfilePicture = ByteArrayToImageSource(profilePicture);
-                }
-            }
-        }
 
 
     }

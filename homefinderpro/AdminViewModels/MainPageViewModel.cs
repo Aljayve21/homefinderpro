@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using homefinderpro.Models;
 
 namespace homefinderpro.AdminViewModels
@@ -52,6 +55,8 @@ namespace homefinderpro.AdminViewModels
                 OnPropertyChanged(nameof(Password));
             }
         }
+
+        
 
 
 
@@ -133,7 +138,7 @@ namespace homefinderpro.AdminViewModels
 
 
 
-
+        
 
 
         public MainPageViewModel()
@@ -142,8 +147,13 @@ namespace homefinderpro.AdminViewModels
             LoginCommand = new Command(async () => await ExecuteLoginCommand());
             Roles = new List<string> { "admin", "customer", "landlord" };
 
+           
+
         }
 
+        
+
+        
 
 
         private async void NavigateToSignup()

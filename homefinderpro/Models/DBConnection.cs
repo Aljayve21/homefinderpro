@@ -51,6 +51,26 @@ namespace homefinderpro.Models
             }
         }
 
+        public bool ApproveOrRejectPost(ObjectId postId, bool approve)
+        {
+            try
+            {
+                var collection = _database.GetCollection<LandlordPost>("landlordposts");
+
+                var filter = Builders<LandlordPost>.Filter.Eq("_id", postId);
+                var update = Builders<LandlordPost>.Update.Set("Status", approve ? "Approved" : "Rejected");
+
+                var result = collection.UpdateOne(filter, update);
+
+                return result.ModifiedCount > 0;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error during post approval/rejection: {ex.Message} ");
+                return false;
+            }
+        }
+
         public IMongoDatabase GetDatabase()
         {
 
@@ -63,10 +83,11 @@ namespace homefinderpro.Models
             return _database.GetCollection<LandlordPost>("landlordposts");
         }
 
-        public IMongoCollection<LandlordPost> GetAdminApprovalCollection()
+        public IMongoCollection<AdminApproval> GetAdminApprovalCollection()
         {
-            return _database.GetCollection<LandlordPost>("adminapproval");
+            return _database.GetCollection<AdminApproval>("adminapproval");
         }
+        /*
 
         public void InsertLandlordPost(LandlordPost post)
         {
@@ -79,6 +100,7 @@ namespace homefinderpro.Models
             var collection = GetAdminApprovalCollection();
             collection.InsertOne(post);
         }
+        */
 
 
 

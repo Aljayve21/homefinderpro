@@ -6,35 +6,69 @@
              BackgroundColor="{DynamicResource White}"
              Title="ProfilePage">
 
+    
     <ContentPage.BindingContext>
         <local:ProfilePictureViewModel />
     </ContentPage.BindingContext>
 
-    <StackLayout>
-        <!-- <StackLayout Padding="20">
-            <Image x:Name="ProfileImage"
-                   Source="{Binding LoggedInUser.ProfilePicture, Converter={StaticResource ByteArrayToImageSourceConverter}}"
-                   HeightRequest="200"
-                   Aspect="AspectFill"
-                   VerticalOptions="CenterAndExpand" />
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <local:ByteArrayToImageSourceConverter x:Key="ByteArrayToImageSourceConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
 
-            <Button Text="Upload Picture"
-                    Command="{Binding UploadPictureCommand}"
-                    VerticalOptions="CenterAndExpand"
-                    HorizontalOptions="CenterAndExpand" />
-        </StackLayout> -->
 
-        <ListView x:Name="UsernameFullnameList" ItemsSource="{Binding UserProfiles}">
+    <StackLayout Background="#4F59DE" Padding="30">
+       
+        <StackLayout>
+            <Border WidthRequest="150"
+                HeightRequest="150"
+                Stroke="Gray"
+                BackgroundColor="LightGray"
+                StrokeShape="RoundRectangle 500"
+                Margin="50">
+                <!-- Change and retrieve the photo from mongodb database after upload the pictures  -->
+                <Image x:Name="ProfileImage" Source="{Binding SelectedUserProfilePicture}" />
+
+            </Border>
+            
+
+            <!-- Delete or clear the current picture upload from database -->
+            <Button
+                x:Name="DeleteButton"
+                Text="Delete"
+                AbsoluteLayout.LayoutFlags="PositionProportional"
+                AbsoluteLayout.LayoutBounds="1,0,AutoSize,AutoSize"
+                WidthRequest="80"
+                HeightRequest="50"
+                Margin="0, -150, 0, 0"
+                BackgroundColor="Transparent"
+                Clicked="OnDeleteButtonClicked"/>
+        </StackLayout>
+        <StackLayout>
+            <!-- Upload button the picture -->
+            <ImageButton x:Name="UploadButton"
+                         Source="upload.png"
+             WidthRequest="30"
+             HeightRequest="30"
+             Margin="0, 32, 0, 0"
+             Command="{Binding UploadProfilePictureCommand}"/>
+        </StackLayout>
+        <ListView x:Name="UsernameFullnameList" ItemsSource="{Binding UserDetailsCollection}" >
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <TextCell Text="{Binding Username}" Detail="{Binding Fullname}" TextColor="Black" DetailColor="Black" />
+                    <TextCell Text="{Binding Username}" Detail="{Binding Fullname}" TextColor="white" DetailColor="White" />
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
+        
+        
 
         <StackLayout>
             <Button Text="Logout" Clicked="OnLogoutClicked" />
         </StackLayout>
+        
+        
 
     </StackLayout>
 

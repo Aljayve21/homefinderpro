@@ -1,4 +1,5 @@
-﻿
+﻿using Maui.GoogleMaps.Hosting;
+using Syncfusion.Maui.Core.Hosting;
 using Microsoft.Extensions.Logging;
 
 namespace homefinderpro;
@@ -11,6 +12,7 @@ public static class MauiProgram
 		builder
 			.UseMauiApp<App>()
 			.UseMauiMaps()
+			.ConfigureSyncfusionCore()
 			.ConfigureFonts(fonts =>
 			{
 				fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
@@ -19,6 +21,11 @@ public static class MauiProgram
 
 #if DEBUG
 		builder.Logging.AddDebug();
+#endif
+#if ANDROID
+		builder.UseGoogleMaps();
+#elif IOS
+		builder.UseGoogleMaps("AIzaSyBcUDWZDnJBOX_Q5IOqDJi60RuqJy1-ZkY");
 #endif
 
         return builder.Build();

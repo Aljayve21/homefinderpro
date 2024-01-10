@@ -11,24 +11,56 @@ public partial class ProfilePage : ContentPage
         InitializeComponent();
         _viewModel = new ProfilePictureViewModel();
         BindingContext = _viewModel;
-
+        
 
     }
-
-    /*
-    private async void UploadPictureButton_Clicked(object sender, EventArgs e)
+    
+    private async void OnUploadButtonClicked(object sender, EventArgs e)
     {
-        var stream = _viewModel.GetPictureStream();
-        if (stream != null)
+        try
         {
-            var byteArray = _viewModel.ReadFully(stream);
-            await _viewModel.SaveProfilePictureToDatabase("username", "user_role", ImageSource.FromStream(() => new MemoryStream(byteArray)));
+            var pictureData = await _viewModel.GetPictureDataAsync();
+
+            if (pictureData != null)
+            {
+                if (BindingContext is ProfilePictureViewModel viewModel)
+                {
+                    await viewModel.UploadProfilePicture(pictureData);
+                }
+                else
+                {
+                    Console.WriteLine("BindingContext is not set correctly.");
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error during profile picture upload: {ex.Message}");
         }
     }
-    */
+    
+   
 
 
 
+
+
+    private async void OnDeleteButtonClicked(object sender, EventArgs e)
+    {
+        if (BindingContext is ProfilePictureViewModel _viewModel)
+        {
+            // Check if a user is selected
+            if (_viewModel.SelectedUserProfile != null)
+            {
+                // Call the DeleteProfilePicture method
+                await _viewModel.DeleteProfilePicture(_viewModel.SelectedUserProfile.Username, _viewModel.SelectedUserProfile.Role);
+            }
+            else
+            {
+                Console.WriteLine("No user profile selected for deletion.");
+            }
+        }
+    }
 
 
 

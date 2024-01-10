@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
               xmlns:maps="clr-namespace:Microsoft.Maui.Controls.Maps;assembly=Microsoft.Maui.Controls.Maps"
              xmlns:local="clr-namespace:homefinderpro.AdminViewModels"
+             xmlns:sf="clr-namespace:Syncfusion.Maui.Core;assembly=Syncfusion.Maui.Core"
              x:Class="homefinderpro.MainPage">
 
     <ContentPage.BindingContext>
@@ -13,7 +14,7 @@
         <Image Source="logo.png" WidthRequest="180"
            HeightRequest="200" HorizontalOptions="Center" />
 
-        <Label Text="HOMEFINDER PRO"
+        <Label Text="HOMEFINDER"
            TextColor="White" FontFamily="Poppins-Bold" FontSize="30"
            HorizontalOptions="Center"/>
 
@@ -30,9 +31,12 @@
                     </Picker.ItemsSource>
                 </Picker>
 
+               
+
                 <Entry Placeholder="Username" TextColor="Black" Text="{Binding Username}"/>
                 <Entry Placeholder="Password"
-               IsPassword="True" TextColor="Black" Text="{Binding Password}"/>
+                       IsPassword="True" TextColor="Black" Text="{Binding Password}" />
+                
                 <Button Text="LOGIN" 
                 Background="Orange" TextColor="White" Command="{Binding LoginCommand}"/>
                 <Label Text="Forgot Password ?"

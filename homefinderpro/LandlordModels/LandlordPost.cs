@@ -11,6 +11,7 @@ namespace homefinderpro.LandlordModels
     public class LandlordPost
     {
         [BsonId]
+        [BsonRepresentation(BsonType.ObjectId)]
         public ObjectId Id { get; set; }
 
         public ObjectId LandlordId { get; set; }
@@ -18,7 +19,6 @@ namespace homefinderpro.LandlordModels
         public string Category { get; set; }
 
         public string Description { get; set; }
-
         public string Location { get; set; }
 
         public decimal Price { get; set; }
@@ -34,5 +34,7 @@ namespace homefinderpro.LandlordModels
         public DateTime SubmissionDate { get; set; }
 
         public List<ObjectId> PhotoIds { get; set; }
+
+        
     }
 }

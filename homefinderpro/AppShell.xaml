@@ -18,7 +18,7 @@
         <ShellItem Route="admin">
             <ShellContent ContentTemplate="{DataTemplate local:admin.adminDashboard}" Title="Service" Route="adminDashboard" />
             <Tab Route="search" Title="Search">
-                <ShellContent ContentTemplate="{DataTemplate local:admin.SearchPage}" Route="search" />
+                <ShellContent ContentTemplate="{DataTemplate local:admin.SearchPage}" Route="search" Icon="search.png"/>
             </Tab>
             <Tab Route="monitorPage" Title="Monitor">
                 <ShellContent ContentTemplate="{DataTemplate local:admin.MonitorPage}" Route="monitorPage" />
@@ -43,7 +43,7 @@
                 <ShellContent ContentTemplate="{DataTemplate local:landlord.Home}" Route="home" />
             </Tab>
             <Tab Route="search" Title="Search">
-                <ShellContent ContentTemplate="{DataTemplate local:landlord.Search}" Route="search" />
+                <ShellContent ContentTemplate="{DataTemplate local:landlord.Search}" Route="search" Icon="search.png" />
             </Tab>
             <Tab Route="profile" Title="Profile">
                 <ShellContent ContentTemplate="{DataTemplate local:landlord.Profile}" Route="profile" />

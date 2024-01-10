@@ -18,4 +18,6 @@ namespace homefinderpro.Models
         public string Role { get; set; }
         public byte[] ProfilePicture { get; set; }
     }
+
+
 }
