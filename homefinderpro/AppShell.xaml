@@ -49,6 +49,24 @@
                 <ShellContent ContentTemplate="{DataTemplate local:landlord.Profile}" Route="profile" />
             </Tab>
         </ShellItem>
+        <ShellItem Route="customer">
+            <ShellContent ContentTemplate="{DataTemplate local:customer.CustomerService}" Title="Service" Route="CustomerService" />
+
+            
+
+            <Tab Route="home" Title="Home">
+                <ShellContent ContentTemplate="{DataTemplate local:customer.Home}" Route="home" />
+            </Tab>
+            <Tab Route="search" Title="Search">
+                <ShellContent ContentTemplate="{DataTemplate local:customer.Search}" Route="search" Icon="search.png" />
+            </Tab>
+            <Tab Route="profile" Title="Profile">
+                <ShellContent ContentTemplate="{DataTemplate local:customer.Profile}" Route="profile" />
+            </Tab>
+            <Tab Route="shortListed" Title="Short Listed">
+                <ShellContent ContentTemplate="{DataTemplate local:customer.ShortListed}" Route="shortListed" />
+            </Tab>
+        </ShellItem>
     </Shell.Items>
 
 </Shell>

@@ -94,10 +94,10 @@ namespace homefinderpro.AdminViewModels
                             await Shell.Current.GoToAsync("//admin/adminDashboard");
                             break;
                         case "landlord":
-                            await Shell.Current.GoToAsync("//landlord/CustomerService");
+                            await Shell.Current.GoToAsync("//landlord/home");
                             break;
                         case "customer":
-                            await Shell.Current.GoToAsync("//customer/customerDashboard");
+                            await Shell.Current.GoToAsync("//customer/home");
                             break;
                         default:
                             Console.WriteLine("Invalid role");

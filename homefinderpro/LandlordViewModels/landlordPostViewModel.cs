@@ -4,9 +4,11 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using homefinderpro.AdminViewModels;
 using homefinderpro.LandlordModels;
 using homefinderpro.Models;
 using MongoDB.Bson;
+using MongoDB.Driver;
 
 namespace homefinderpro.LandlordViewModels
 {
@@ -230,6 +232,8 @@ namespace homefinderpro.LandlordViewModels
             byte[] validIdPicture = ValidIdPicture;
             byte[] governmentDocument = GovernmentDocument;
 
+            var currentUser = await GetCurrentLandlord();
+
 
             var landlordPost = new LandlordPost
             {
@@ -259,6 +263,20 @@ namespace homefinderpro.LandlordViewModels
 
                 MessagingCenter.Send(this, "SubmissionError");
             }
+        }
+
+        private async Task<Landlord> GetCurrentLandlord()
+        {
+            // Retrieve the currently logged-in user information from the session
+            var currentUser = UserSession.Instance;
+
+            // Use the username to query the Landlords collection
+            var filter = Builders<Landlord>.Filter.Eq(l => l.Username, currentUser.Username);
+
+            // Retrieve the landlord information
+            var landlord = await DBConnection.Instance.GetLandlordsCollection().Find(filter).FirstOrDefaultAsync();
+
+            return landlord;
         }
 
         public async Task OnAddPhotoClicked()

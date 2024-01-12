@@ -8,6 +8,7 @@ using MongoDB.Driver.GridFS;
 using homefinderpro.Models;
 using homefinderpro.LandlordModels;
 using homefinderpro.AdminModels;
+using homefinderpro.AdminViewModels;
 
 namespace homefinderpro.LandlordViewModels
 {
@@ -103,28 +104,22 @@ namespace homefinderpro.LandlordViewModels
             return photoId;
         }
 
-        private void NotifyAdmin(LandlordPost post)
+        private void NotifyAdmin(LandlordPost post, Landlord currentLandlord)
         {
             try
             {
+                if(currentLandlord == null)
+                {
+                    Console.WriteLine("Current landlord not available");
+                    return;
+                }
                 var adminCollection = _dbConnection.GetDatabase().GetCollection<AdminApproval>("adminapproval");
 
                 var adminApproval = new AdminApproval
                 {
                     LandlordPostId = post.Id,
                     ApprovalStatus = "Pending",
-                    Username = this.Username,
-                    ProfilePicture = this.ProfilePicture,
-                    Category = post.Category,
-                    Description = post.Description,
-                    Location = post.Location,
-                    Price = post.Price,
-                    Photos = post.Photos,
-                    ValidIdPicture = post.ValidIdPicture,
-                    GovernmentDocument = post.GovernmentDocument,
-                    Status = post.Status,
-                    SubmissionDate = post.SubmissionDate,
-                    PhotoIds = post.PhotoIds
+                    
                 };
 
                 adminCollection.InsertOne(adminApproval);
@@ -134,6 +129,13 @@ namespace homefinderpro.LandlordViewModels
                 Console.WriteLine($"Error notifying admin: {ex.Message} ");
             }
         }
+
+        private void NotifyAdmin(LandlordPost post)
+        {
+            NotifyAdmin(post, this);
+        }
+
+
 
         public bool SendToApproval(LandlordPost post)
         {

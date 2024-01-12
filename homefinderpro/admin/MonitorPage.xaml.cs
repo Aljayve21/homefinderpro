@@ -11,25 +11,25 @@ namespace homefinderpro.admin;
 
 public partial class MonitorPage : ContentPage
 {
-	private readonly AdminApprovalViewModel _adminApprovalViewModel;
-	private readonly DBConnection _dbConnection;
+    private readonly AdminApprovalViewModel _adminApprovalViewModel;
+    private readonly DBConnection _dbConnection;
 
-	public ObservableCollection<LandlordPost> LandlordPostsForApproval { get; set; }
-	public MonitorPage()
-	{
-		InitializeComponent();
+    public ObservableCollection<LandlordPost> LandlordPostsForApproval { get; set; }
+    public MonitorPage()
+    {
+        InitializeComponent();
 
-		_adminApprovalViewModel = new AdminApprovalViewModel();
-		_dbConnection = new DBConnection();
+        _adminApprovalViewModel = new AdminApprovalViewModel();
+        _dbConnection = new DBConnection();
         LandlordPostsForApproval = new ObservableCollection<LandlordPost>();
-		BindingContext = this;
-	}
+        BindingContext = this;
+    }
 
     protected override async void OnAppearing()
     {
         base.OnAppearing();
 
-        
+
         if (_adminApprovalViewModel != null)
         {
             //LoadAdminApprovalData();

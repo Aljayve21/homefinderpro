@@ -7,6 +7,7 @@ using MongoDB.Driver;
 using homefinderpro.AdminModels;
 using MongoDB.Bson;
 using homefinderpro.LandlordModels;
+using homefinderpro.LandlordViewModels;
 
 namespace homefinderpro.Models
 {
@@ -101,6 +102,14 @@ namespace homefinderpro.Models
             collection.InsertOne(post);
         }
         */
+
+        public IMongoCollection<Landlord> GetLandlordsCollection()
+        {
+           
+            return _database.GetCollection<Landlord>("landlords");
+        }
+
+        
 
 
 

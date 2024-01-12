@@ -1,4 +1,4 @@
-namespace homefinderpro.landlord;
+namespace homefinderpro.customer;
 
 public partial class Home : ContentPage
 {
