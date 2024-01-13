@@ -225,8 +225,8 @@ namespace homefinderpro.LandlordViewModels
             var landlord = new Landlord(new DBConnection());
 
             string category = SelectedCategory;
-            string description = Description;
-            string location = Location;
+            string description = DescriptionText;
+            string location = LocationText;
             decimal price = Price;
             List<byte[]> photos = new List<byte[]>(Photos);
             byte[] validIdPicture = ValidIdPicture;
@@ -390,6 +390,71 @@ namespace homefinderpro.LandlordViewModels
             }
 
             return documentData;
+        }
+
+        private string _descriptionText;
+        public string DescriptionText
+        {
+            get => _descriptionText;
+            set
+            {
+                _descriptionText = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private string _locationText;
+        public string LocationText
+        {
+            get => _locationText;
+            set
+            {
+                _locationText = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private string _apartmentName;
+        public string ApartmentName
+        {
+            get => _apartmentName;
+            set
+            {
+                _apartmentName = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private string _priceEntry;
+        public string PriceEntry
+        {
+            get => _priceEntry;
+            set
+            {
+                _priceEntry = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public async Task OnApartmentNameTextChanged(string newText)
+        {
+            ApartmentName = newText;
+            await SubmitPost();
+        }
+
+        public async Task OnPriceEntryTextChanged(string newText)
+        {
+            PriceEntry = newText;
+        }
+
+        public async Task OnDescriptionTextChanged(string newText)
+        {
+            DescriptionText = newText;
+        }
+
+        public async Task OnLocationTextChanged(string newText)
+        {
+            LocationText = newText;
         }
 
 

@@ -23,8 +23,8 @@
                 </Picker>
 
 
-                <Entry Placeholder="Apartment Name" x:Name="ApartmentNameEntry" TextColor="Black" />
-                <Entry Placeholder="Price" x:Name="PriceEntry" TextColor="Black" />
+                <Entry Placeholder="Apartment Name" x:Name="ApartmentNameEntry" Text="{Binding ApartmentName, Mode=TwoWay}" TextChanged="OnApartmentNameTextChanged" TextColor="Black" />
+                <Entry Placeholder="Price" x:Name="PriceEntry" Text="{Binding PriceEntry, Mode=TwoWay}" TextChanged="OnPriceEntryTextChanged" TextColor="Black" />
 
 
                 <StackLayout>
